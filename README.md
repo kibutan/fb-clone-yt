@@ -1,6 +1,6 @@
-https://youtu.be/6fNy0iD3hsk?t=16955
+https://youtu.be/6fNy0iD3hsk?t=17518
 
-    4:42:35
+    4:51:58
 
 詰まったところ
 動画内で説明されている Firebase のバージョンが古く、書き方が変わっている箇所があった。
