@@ -3,9 +3,9 @@ import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
 import { session, useSession } from "next-auth/client";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 // import firebase from "firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc } from "firebase/firestore";
 
 import { fromJSON } from "postcss";
 
@@ -26,6 +26,35 @@ function InputBox() {
       email: session.user.email,
       image: session.user.image,
       timestamp: serverTimestamp(),
+    }).then((doc) => {
+      if (imageToPost) {
+        const uploadTask = storage
+          .ref(`posts/${doc.id}`)
+          .putString(imageToPost, "data_url");
+        removeImage();
+        uploadTask.on(
+          "state_change",
+          null,
+          (error) => console.error(error),
+          () => {
+            // When the upload completes
+            storage
+              .ref("posts")
+              .child(doc.id)
+              .getDownloadURL()
+              .then((url) => {
+                db.collection("posts").doc(doc.id).set(
+                  {
+                    postImage: url,
+                  },
+                  {
+                    merge: true,
+                  }
+                );
+              });
+          }
+        );
+      }
     });
     inputRef.current.value = "";
   };

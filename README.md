@@ -1,6 +1,5 @@
-https://youtu.be/6fNy0iD3hsk?t=17518
-
-    4:51:58
+https://youtu.be/6fNy0iD3hsk?t=17786
+4:56:26
 
 詰まったところ
 動画内で説明されている Firebase のバージョンが古く、書き方が変わっている箇所があった。
@@ -24,3 +23,8 @@ https://youtu.be/6fNy0iD3hsk?t=17518
 Copilot に打ってもらったのをろくに確認しなかった証拠である。
 
 ともかく、このエラーを解消し無事にテキストボックスの中身を Firebase に保存できたので満足。
+
+---
+
+書き方が v8 なので以下のような書き方が必要だろう
+https://cloud.google.com/firestore/docs/manage-data/add-data?hl=ja#web-version-9_2
