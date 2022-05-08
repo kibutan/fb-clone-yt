@@ -3,10 +3,22 @@ import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
 import { session, useSession } from "next-auth/client";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { db, storage } from "../firebase";
+import { db } from "../firebase";
 // import firebase from "firebase";
-import { collection, addDoc, serverTimestamp, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  uploadString,
+} from "firebase/storage";
 import { fromJSON } from "postcss";
 
 function InputBox() {
@@ -28,9 +40,10 @@ function InputBox() {
       timestamp: serverTimestamp(),
     }).then((doc) => {
       if (imageToPost) {
-        const uploadTask = storage
-          .ref(`posts/${doc.id}`)
-          .putString(imageToPost, "data_url");
+        // const uploadTask = storage.ref(`posts/${doc.id}`).putString(imageToPost, "data_url");
+        const storage = getStorage();
+        const uploadRef = ref(storage, `posts/${doc.id}`);
+        const uploadTask = uploadBytesResumable(uploadRef, "data_url");
         removeImage();
         uploadTask.on(
           "state_change",
@@ -38,20 +51,13 @@ function InputBox() {
           (error) => console.error(error),
           () => {
             // When the upload completes
-            storage
-              .ref("posts")
-              .child(doc.id)
-              .getDownloadURL()
-              .then((url) => {
-                db.collection("posts").doc(doc.id).set(
-                  {
-                    postImage: url,
-                  },
-                  {
-                    merge: true,
-                  }
-                );
-              });
+            // storage.ref("posts").child(doc.id).getDownloadURL().then((url) => {
+            // db.collection("posts").doc(doc.id).set(
+            //   {postImage: url,},
+            //   {merge: true,}
+            ref(storage, doc.id);
+            setDoc(doc(db, "posts"), { postImage: url }, doc);
+            // });
           }
         );
       }
