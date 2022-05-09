@@ -38,11 +38,11 @@ function InputBox() {
       email: session.user.email,
       image: session.user.image,
       timestamp: serverTimestamp(),
-    }).then((doc) => {
+    }).then((docTemp) => {
       if (imageToPost) {
         // const uploadTask = storage.ref(`posts/${doc.id}`).putString(imageToPost, "data_url");
         const storage = getStorage();
-        const uploadRef = ref(storage, `posts/${doc.id}`);
+        const uploadRef = ref(storage, `posts/${docTemp.id}`);
         const uploadTask = uploadBytesResumable(uploadRef, "data_url");
         removeImage();
         uploadTask.on(
@@ -55,8 +55,8 @@ function InputBox() {
             // db.collection("posts").doc(doc.id).set(
             //   {postImage: url,},
             //   {merge: true,}
-            ref(storage, doc.id);
-            setDoc(doc(db, "posts"), { postImage: url }, doc);
+            ref(storage, docTemp.id);
+            setDoc(doc(db, "posts"), { postImage: url }, docTemp);
             // });
           }
         );
