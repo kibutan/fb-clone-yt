@@ -1,25 +1,10 @@
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
-import { session, useSession } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { db } from "../firebase";
-// import firebase from "firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  setDoc,
-} from "firebase/firestore";
-
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  uploadString,
-} from "firebase/storage";
-import { fromJSON } from "postcss";
+import { db, storage } from "../firebase";
+import firebase from "firebase";
 
 function InputBox() {
   const [session] = useSession();
@@ -30,38 +15,40 @@ function InputBox() {
   const sendPost = (e) => {
     e.preventDefault();
     if (!inputRef.current.value) return;
-    console.log(session.user.email, session.user.name, session.user.image);
-    console.log(inputRef.current.value, serverTimestamp());
-    addDoc(collection(db, "posts"), {
-      message: inputRef.current.value,
-      name: session.user.name,
-      email: session.user.email,
-      image: session.user.image,
-      timestamp: serverTimestamp(),
-    }).then((docTemp) => {
-      if (imageToPost) {
-        // const uploadTask = storage.ref(`posts/${doc.id}`).putString(imageToPost, "data_url");
-        const storage = getStorage();
-        const uploadRef = ref(storage, `posts/${docTemp.id}`);
-        const uploadTask = uploadBytesResumable(uploadRef, "data_url");
-        removeImage();
-        uploadTask.on(
-          "state_change",
-          null,
-          (error) => console.error(error),
-          () => {
-            // When the upload completes
-            // storage.ref("posts").child(doc.id).getDownloadURL().then((url) => {
-            // db.collection("posts").doc(doc.id).set(
-            //   {postImage: url,},
-            //   {merge: true,}
-            ref(storage, docTemp.id);
-            setDoc(doc(db, "posts"), { postImage: url }, docTemp);
-            // });
-          }
-        );
-      }
-    });
+
+    db.collection("posts")
+      .add({
+        message: inputRef.current.value,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then((doc) => {
+        if (imageToPost) {
+          const uploadTask = storage
+            .ref(`posts/${doc.id}`)
+            .putString(imageToPost, "data_url");
+          removeImage();
+          uploadTask.on(
+            "state_changed",
+            null,
+            (error) => console.error(error),
+            () => {
+              // when upload completes
+              storage
+                .ref("posts")
+                .child(doc.id)
+                .getDownloadURL()
+                .then((url) => {
+                  db.collection("posts")
+                    .doc(doc.id)
+                    .set({ postImage: url }, { merge: true });
+                });
+            }
+          );
+        }
+      });
     inputRef.current.value = "";
   };
 

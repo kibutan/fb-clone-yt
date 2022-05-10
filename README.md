@@ -38,3 +38,10 @@ https://www.youtube.com/watch?v=6fNy0iD3hsk&t=17786s
 この辺から見るといい。
 
 または npm uninstall するのも手だろう。
+
+---
+
+https://youtu.be/6fNy0iD3hsk?t=18094
+
+5:01:34
+ダウングレードした。うｐできるようになった。

@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
-    "firebase": "^9.7.0",
+    "firebase": "^8.10.0",
     "next": "12.1.5",
     "next-auth": "^3.29.3",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-firebase-hooks": "^5.0.3"
+    "react-firebase-hooks": "^3.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.5",
