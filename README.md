@@ -41,7 +41,7 @@ https://www.youtube.com/watch?v=6fNy0iD3hsk&t=17786s
 
 ---
 
-https://youtu.be/6fNy0iD3hsk?t=18094
+https://youtu.be/6fNy0iD3hsk?t=18119
 
-5:01:34
+5:01:59
 ダウングレードした。うｐできるようになった。
